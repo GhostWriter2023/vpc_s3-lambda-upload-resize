@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
@@ -5,16 +6,16 @@ const path = require('path');
 const { S3Client, ListObjectsV2Command, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 const s3Client = new S3Client({
-    region: 'us-east-1',
-    endpoint: 'http://localhost:4566', // LocalStack endpoint
-    forcePathStyle: true // LocalStack compatibility
+    region: process.env.AWS_REGION, // modified for deployment to VPC, my LocalStack set up was'us-east-1'
+    // endpoint: 'http://localhost:4566', // LocalStack endpoint
+    // forcePathStyle: true // LocalStack compatibility
 });
 
 const app = express();
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the "public" directory
 
-const IMAGES_BUCKET = 't3.2.4-bucket-1nov24'; // my LocalStack S3 bucket name
+const IMAGES_BUCKET = process.env.BUCKET_NAME; // my LocalStack S3 bucket name was 't3.2.4-bucket-1nov24'
 const UPLOAD_TEMP_PATH = './uploads';
 if (!fs.existsSync(UPLOAD_TEMP_PATH)) fs.mkdirSync(UPLOAD_TEMP_PATH); // Ensure upload directory exists
 
