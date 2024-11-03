@@ -20,20 +20,58 @@ body {
     gap: 10px;
 }
 
+/* New styling for the bucket list container */
+.bucket-list-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.bucket-list-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.bucket-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.bucket-list li {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Styling the image container for horizontal alignment */
 .image-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: wrap; /* Allow images to wrap horizontally */
+    justify-content: center; /* Center images */
+    gap: 20px; /* Space between images */
     margin-top: 20px;
 }
 
-.image-container img {
-    border: 1px solid #ccc; /* Optional border */
-    border-radius: 8px; /* Rounded corners */
+/* Center each image with its label */
+.img-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#imageInput {
-    display: none;
+/* Set the style for uploaded images */
+.uploaded-image {
+    width: 150px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+/* Style for image labels */
+.image-label {
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    margin-top: 5px;
 }
 
 button {

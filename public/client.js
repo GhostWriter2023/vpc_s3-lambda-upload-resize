@@ -34,22 +34,50 @@ function displayImages() {
     fetch('/images')
         .then(response => response.json())
         .then(images => {
+            const bucketListContainer = document.getElementById('bucketListContainer');
             const imageContainer = document.getElementById('imageContainer');
-            imageContainer.innerHTML = ''; // Clear existing images
-            
+
+            // Clear existing content
+            bucketListContainer.innerHTML = '';
+            imageContainer.innerHTML = '';
+
             if (images.length === 0) {
-                imageContainer.innerHTML = '<p>No images uploaded yet.</p>';
+                bucketListContainer.innerHTML = '<p>No images available in the bucket.</p>';
                 return;
             }
 
-            images.forEach(image => {
-                const imgElement = document.createElement('img');
-                imgElement.src = `/images/${image.Key}`; // Set the source to fetch the image
-                imgElement.alt = image.Key;
-                imgElement.style.width = '200px'; // Set a size for the images
-                imgElement.style.margin = '10px'; // Add some margin
+            // Populate the bucket list with image names as a list
+            const listTitle = document.createElement('h2');
+            listTitle.textContent = 'Bucket Object List';
+            bucketListContainer.appendChild(listTitle);
 
-                imageContainer.appendChild(imgElement); // Append to the container
+            const list = document.createElement('ul');
+            list.classList.add('bucket-list'); // For styling the list
+            images.forEach(image => {
+                const listItem = document.createElement('li');
+                listItem.textContent = image.Key;
+                list.appendChild(listItem);
+            });
+            bucketListContainer.appendChild(list);
+
+            // Populate images in the imageContainer
+            images.forEach(image => {
+                const imgWrapper = document.createElement('div');
+                imgWrapper.classList.add('img-wrapper'); // Wrapper for styling
+
+                const imgElement = document.createElement('img');
+                imgElement.src = `/images/${image.Key}`;
+                imgElement.alt = image.Key;
+                imgElement.classList.add('uploaded-image'); // Style class for images
+
+                const imgLabel = document.createElement('p');
+                imgLabel.classList.add('image-label'); // Style class for labels
+                imgLabel.textContent = image.Key;
+
+                // Append image and label to wrapper, and wrapper to image container
+                imgWrapper.appendChild(imgElement);
+                imgWrapper.appendChild(imgLabel);
+                imageContainer.appendChild(imgWrapper);
             });
         })
         .catch(err => {
