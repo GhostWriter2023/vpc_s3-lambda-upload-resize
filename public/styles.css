@@ -90,3 +90,14 @@ button {
 #selectImageButton {
     background-color: #007BFF; /* Blue */
 }
+
+.resized-container {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.resized-container h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}

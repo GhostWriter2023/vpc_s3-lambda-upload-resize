@@ -14,19 +14,30 @@ const app = express();
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the "public" directory
 
-const IMAGES_BUCKET = 't3.2.4-s3bucket-vpc'; // my LocalStack S3 bucket name was 't3.2.4-bucket-1nov24'
+const IMAGES_BUCKET = 't3.2.5-s3bucket-lambda'; // my LocalStack S3 bucket name was 't3.2.4-bucket-1nov24'
+const ORIGINAL_FOLDER = 'original-images/';
+const RESIZED_FOLDER = 'resized-images/';
 const UPLOAD_TEMP_PATH = './uploads';
 if (!fs.existsSync(UPLOAD_TEMP_PATH)) fs.mkdirSync(UPLOAD_TEMP_PATH); // Ensure upload directory exists
 
-app.get('/images', async (req, res) => {
-    const listObjectsParams = {
-        Bucket: IMAGES_BUCKET
-    };
-    
+// Fetch original images
+app.get('/images/original-images', async (req, res) => {
+    const params = { Bucket: IMAGES_BUCKET, Prefix: ORIGINAL_FOLDER };
     try {
-        const listObjectsCmd = new ListObjectsV2Command(listObjectsParams);
-        const data = await s3Client.send(listObjectsCmd);
+        const data = await s3Client.send(new ListObjectsV2Command(params));
         res.json(data.Contents || []); // Send list of objects in JSON format
+    } catch (err) {
+        console.error("Error listing objects:", err);
+        res.status(500).send("Error listing objects");
+    }
+});
+
+// Fetch resized images
+app.get('/images/resized-images', async (req, res) => {
+    const params = { Bucket: IMAGES_BUCKET, Prefix: RESIZED_FOLDER };
+    try {
+        const data = await s3Client.send(new ListObjectsV2Command(params));
+        res.json(data.Contents || []);
     } catch (err) {
         console.error("Error listing objects:", err);
         res.status(500).send("Error listing objects");
