@@ -83,20 +83,20 @@ app.post('/images', async (req, res) => {
     });
 });
 
-app.get('/images/:filename', async (req, res) => {
-    const fileName = req.params.filename;
+app.get('/images/:prefix/:filename', async (req, res) => {
+    const { prefix, filename } = req.params;
 
     const getObjectParams = {
         Bucket: IMAGES_BUCKET,
-        Key: fileName
+        Key: `${prefix}/${filename}` // Include the prefix in the S3 key
     };
 
     try {
         const getObjectCmd = new GetObjectCommand(getObjectParams);
         const data = await s3Client.send(getObjectCmd);
 
-        // Pipe S3 object directly to response
-        data.Body.pipe(res);
+        res.setHeader('Content-Type', data.ContentType); // Set content type for the response
+        data.Body.pipe(res); // Pipe S3 object directly to response
 
     } catch (err) {
         console.error("Error retrieving object:", err);
